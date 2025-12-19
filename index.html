@@ -1,1 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>CryptoMine Cloud - BTC Miner (Simulation)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CryptoMine Cloud est une simulation de minage Bitcoin. Aucun vrai BTC n'est généré ou retirable.">
 
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240731940121790"
+     crossorigin="anonymous"></script>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: #fff;
+}
+.app {
+  max-width: 420px;
+  margin: auto;
+  padding: 15px;
+}
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.header h1 {
+  color: #ff9900;
+}
+.card {
+  background: #1c1c1c;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+.balance {
+  font-size: 26px;
+  text-align: center;
+  color: #ff9900;
+}
+.euro {
+  text-align: center;
+  color: #aaa;
+  margin-top: 4px;
+}
+.rate {
+  text-align: center;
+  color: #aaa;
+  margin-top: 6px;
+}
+.disclaimer {
+  font-size: 12px;
+  color: #aaa;
+  text-align: center;
+  margin-top: 10px;
+}
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #ff9900;
+  color: #000;
+  font-size: 16px;
+  cursor: pointer;
+}
+button.secondary {
+  background: #333;
+  color: #fff;
+}
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 20px;
+}
+.footer a {
+  color: #ff9900;
+  text-decoration: none;
+  margin: 0 5px;
+}
+.section-content {
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <div class="header">
+    <h1>CryptoMine Cloud</h1>
+    <p>BTC Miner – Simulation</p>
+  </div>
+
+  <div class="card">
+    <div class="balance" id="balance">0.00000000 BTC</div>
+    <div class="euro" id="euro">≈ 0.00 €</div>
+    <div class="rate">Vitesse de minage : fixe</div>
+
+    <p class="disclaimer">
+      ⚠️ Simulation de minage – Aucun vrai Bitcoin n’est généré, miné ou retirable.
+    </p>
+
+    <!-- Publicité -->
+    <ins class="adsbygoogle"
+         style="display:block; margin:10px 0;"
+         data-ad-client="ca-pub-4240731940121790"
+         data-ad-slot="1234567890"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+    <button id="mineBtn">▶ Démarrer la simulation</button>
+    <button class="secondary" onclick="withdrawAll()">💸 Withdraw (simulation)</button>
+  </div>
+
+  <div class="footer">
+    <a href="#privacy">Politique de confidentialité</a> |
+    <a href="#legal">Mentions légales</a>
+  </div>
+
+  <div id="privacy" class="card section-content">
+    <h2>Politique de confidentialité</h2>
+    <div id="privacyContent">Chargement...</div>
+  </div>
+
+  <div id="legal" class="card section-content">
+    <h2>Mentions légales</h2>
+    <div id="legalContent">Chargement...</div>
+  </div>
+</div>
+
+<script>
+let balance = parseFloat(localStorage.getItem("btc")) || 0;
+let mining = false;
+let interval;
+let btcPrice = 0;
+const MINING_SPEED = 0.0000001;
+
+async function getBTCPrice() {
+  try {
+    const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur");
+    const d = await r.json();
+    btcPrice = d.bitcoin.eur;
+    updateUI();
+  } catch(e) {}
+}
+getBTCPrice();
+setInterval(getBTCPrice, 60000);
+
+function updateUI() {
+  balance = Math.max(balance, 0);
+  document.getElementById("balance").innerText = balance.toFixed(8) + " BTC";
+  document.getElementById("euro").innerText = "≈ " + (balance * btcPrice).toFixed(2) + " €";
+}
+
+mineBtn.onclick = () => {
+  mining = !mining;
+  if (mining) {
+    mineBtn.innerText = "⏹ Stop";
+    interval = setInterval(() => {
+      balance += MINING_SPEED;
+      localStorage.setItem("btc", balance);
+      updateU
